@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>Black Death: Landowner Launcher</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0b1220; --panel:#121a2a; --panel2:#0f1726;
+      --border:#2b3550; --text:#e7eefc; --muted:#a9b6d6;
+      --gold:#f1c40f; --green:#2ecc71; --orange:#e67e22; --blue:#3498db; --red:#e74c3c;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family:'Press Start 2P', system-ui, sans-serif;
+      background: radial-gradient(1200px 700px at 50% -10%, #1b2a55 0%, var(--bg) 55%);
+      color:var(--text);
+      min-height:100dvh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      user-select:none;
+      -webkit-user-select:none;
+    }
+    .wrap{
+      width:min(980px, 100%);
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
+    .title{
+      background: linear-gradient(180deg, rgba(18,26,42,0.95), rgba(15,23,38,0.95));
+      border:3px solid var(--border);
+      border-radius:14px;
+      padding:18px 16px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+    }
+    .title h1{
+      margin:0 0 10px 0;
+      font-size:14px;
+      line-height:1.35;
+      color:var(--gold);
+      text-shadow:2px 2px 0 #000;
+    }
+    .title p{
+      margin:0;
+      font-size:10px;
+      line-height:1.6;
+      color:var(--muted);
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:14px;
+    }
+    @media (min-width: 860px){
+      .grid{ grid-template-columns: 1fr 1fr; }
+    }
+
+    .card{
+      background: linear-gradient(180deg, rgba(18,26,42,0.95), rgba(15,23,38,0.95));
+      border:3px solid var(--border);
+      border-radius:14px;
+      padding:16px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      min-height: 220px;
+    }
+    .card h2{
+      margin:0;
+      font-size:12px;
+      line-height:1.35;
+      text-shadow:2px 2px 0 #000;
+    }
+    .tagrow{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .tag{
+      font-size:8px;
+      padding:6px 8px;
+      border:2px solid var(--border);
+      border-radius:999px;
+      color:var(--muted);
+      background: rgba(0,0,0,0.18);
+    }
+    .desc{
+      font-size:9px;
+      line-height:1.6;
+      color:var(--muted);
+      flex:1;
+    }
+
+    .btnrow{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:flex-start;
+      flex-wrap:wrap;
+    }
+    .btn{
+      font-family:'Press Start 2P', system-ui, sans-serif;
+      font-size:10px;
+      padding:14px 14px;
+      border-radius:12px;
+      border:3px solid rgba(255,255,255,0.15);
+      cursor:pointer;
+      touch-action:manipulation;
+      box-shadow: 0 7px 0 rgba(0,0,0,0.45);
+      transform: translateY(0);
+      color:#fff;
+      text-decoration:none;
+      display:inline-block;
+    }
+    .btn:active{ box-shadow: 0 0 0 rgba(0,0,0,0.0); transform: translateY(7px); }
+
+    .btn-town{ background: linear-gradient(180deg, #2d6aa2, #234e78); border-color: rgba(52,152,219,0.45); }
+    .btn-fields{ background: linear-gradient(180deg, #2f9b5f, #227a49); border-color: rgba(46,204,113,0.45); }
+    .btn-small{
+      font-size:8px;
+      padding:10px 12px;
+      background: rgba(0,0,0,0.25);
+      border-color: rgba(255,255,255,0.12);
+      color: var(--muted);
+    }
+
+    .footer{
+      font-size:8px;
+      color:var(--muted);
+      opacity:0.95;
+      line-height:1.6;
+      padding: 0 2px;
+    }
+    .kbd{
+      display:inline-block;
+      padding:3px 6px;
+      border:1px solid var(--border);
+      border-bottom-width:3px;
+      border-radius:6px;
+      background: rgba(0,0,0,0.25);
+      color: var(--text);
+      margin:0 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="title">
+      <h1>BLACK DEATH: LANDOWNER</h1>
+      <p>
+        Choose your arena. In town, you set <span style="color:var(--blue)">rent</span>.
+        In the fields, you set <span style="color:var(--green)">wages</span>.
+        Same decade, same shock, different leverage.
+      </p>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h2 style="color:var(--blue)">GAME 1: IN TOWN (RENTS)</h2>
+        <div class="tagrow">
+          <span class="tag">price competition</span>
+          <span class="tag">tenants shuffle</span>
+          <span class="tag">plague hits 1348</span>
+        </div>
+        <div class="desc">
+          You’re a town landlord among rival houses. Set rent to attract tenants without leaving money on the table.
+          Watch how labor scarcity and death change bargaining power.
+        </div>
+        <div class="btnrow">
+          <a class="btn btn-town" href="town.html">PLAY IN TOWN</a>
+          <a class="btn btn-small" href="town.html#howto">HOW IT WORKS</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 style="color:var(--green)">GAME 2: IN THE FIELDS (WAGES)</h2>
+        <div class="tagrow">
+          <span class="tag">hiring pressure</span>
+          <span class="tag">poaching</span>
+          <span class="tag">harvest timing</span>
+        </div>
+        <div class="desc">
+          You’re a vineyard owner competing for workers. Offer wages high enough to staff the rows, but not so high you burn your gold.
+          Plague changes the worker market fast.
+        </div>
+        <div class="btnrow">
+          <a class="btn btn-fields" href="fields.html">PLAY IN THE FIELDS</a>
+          <a class="btn btn-small" href="fields.html#howto">HOW IT WORKS</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      Tip: put <span class="kbd">index.html</span>, <span class="kbd">town.html</span>, and <span class="kbd">fields.html</span> in the same folder.
+      If hosting on GitHub Pages, these become your three main files.
+    </div>
+  </div>
+
+  <script>
+    // Optional: keyboard shortcuts on desktop
+    window.addEventListener('keydown', (e) => {
+      const k = (e.key || '').toLowerCase();
+      if(k === '1') window.location.href = 'town.html';
+      if(k === '2') window.location.href = 'fields.html';
+    });
+  </script>
+</body>
+</html>
