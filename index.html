@@ -10,6 +10,7 @@
       --bg:#0b1220; --panel:#121a2a; --panel2:#0f1726;
       --border:#2b3550; --text:#e7eefc; --muted:#a9b6d6;
       --gold:#f1c40f; --green:#2ecc71; --orange:#e67e22; --blue:#3498db; --red:#e74c3c;
+      --shadow: 0 12px 30px rgba(0,0,0,0.35);
     }
     *{ box-sizing:border-box; }
     body{
@@ -25,6 +26,7 @@
       user-select:none;
       -webkit-user-select:none;
     }
+    a{ color:inherit; }
     .wrap{
       width:min(980px, 100%);
       display:flex;
@@ -36,7 +38,7 @@
       border:3px solid var(--border);
       border-radius:14px;
       padding:18px 16px;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+      box-shadow: var(--shadow);
     }
     .title h1{
       margin:0 0 10px 0;
@@ -66,7 +68,7 @@
       border:3px solid var(--border);
       border-radius:14px;
       padding:16px;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+      box-shadow: var(--shadow);
       display:flex;
       flex-direction:column;
       gap:12px;
@@ -120,7 +122,6 @@
       display:inline-block;
     }
     .btn:active{ box-shadow: 0 0 0 rgba(0,0,0,0.0); transform: translateY(7px); }
-
     .btn-town{ background: linear-gradient(180deg, #2d6aa2, #234e78); border-color: rgba(52,152,219,0.45); }
     .btn-fields{ background: linear-gradient(180deg, #2f9b5f, #227a49); border-color: rgba(46,204,113,0.45); }
     .btn-small{
@@ -147,6 +148,115 @@
       background: rgba(0,0,0,0.25);
       color: var(--text);
       margin:0 4px;
+      white-space:nowrap;
+    }
+
+    /* HOW IT WORKS modal */
+    .overlay{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,0.62);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:16px;
+      z-index:999;
+    }
+    .overlay.show{ display:flex; }
+    .modal{
+      width:min(980px, 100%);
+      max-height: min(82dvh, 760px);
+      overflow:auto;
+      background: linear-gradient(180deg, rgba(18,26,42,0.98), rgba(15,23,38,0.98));
+      border:3px solid var(--border);
+      border-radius:14px;
+      box-shadow: 0 18px 60px rgba(0,0,0,0.55);
+      padding:14px;
+    }
+    .modalTop{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      justify-content:space-between;
+      margin-bottom:10px;
+    }
+    .modal h3{
+      margin:0;
+      font-size:12px;
+      line-height:1.35;
+      text-shadow:2px 2px 0 #000;
+    }
+    .closeBtn{
+      font-family:'Press Start 2P', system-ui, sans-serif;
+      font-size:8px;
+      padding:10px 12px;
+      border-radius:12px;
+      border:3px solid rgba(255,255,255,0.12);
+      background: rgba(0,0,0,0.25);
+      color: var(--muted);
+      cursor:pointer;
+      box-shadow: 0 7px 0 rgba(0,0,0,0.45);
+    }
+    .closeBtn:active{ box-shadow:none; transform:translateY(7px); }
+    .howGrid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:12px;
+    }
+    @media (min-width: 860px){
+      .howGrid{ grid-template-columns: 1fr 1fr; }
+    }
+    .howCard{
+      border:2px solid var(--border);
+      border-radius:14px;
+      padding:12px;
+      background: rgba(0,0,0,0.18);
+    }
+    .howCard h4{
+      margin:0 0 10px 0;
+      font-size:10px;
+      line-height:1.5;
+      color: var(--gold);
+      text-shadow:2px 2px 0 #000;
+    }
+    .howCard p, .howCard li{
+      margin:0;
+      font-size:9px;
+      line-height:1.75;
+      color: var(--muted);
+    }
+    .howCard ul{
+      margin:10px 0 0 18px;
+      padding:0;
+    }
+    .pill{
+      display:inline-block;
+      font-size:8px;
+      padding:6px 8px;
+      border:2px solid var(--border);
+      border-radius:999px;
+      color:var(--muted);
+      background: rgba(0,0,0,0.18);
+      margin:6px 6px 0 0;
+      white-space:nowrap;
+    }
+    .hint{
+      border-left:4px solid rgba(241,196,15,0.6);
+      padding:10px 10px 10px 12px;
+      margin-top:10px;
+      background: rgba(241,196,15,0.06);
+      border-radius:10px;
+    }
+    .warn{
+      border-left:4px solid rgba(231,76,60,0.6);
+      padding:10px 10px 10px 12px;
+      margin-top:10px;
+      background: rgba(231,76,60,0.06);
+      border-radius:10px;
+    }
+
+    /* a11y: reduce motion */
+    @media (prefers-reduced-motion: reduce){
+      .btn, .closeBtn{ transition:none; }
     }
   </style>
 </head>
@@ -158,6 +268,7 @@
         Choose your arena. In town, you set <span style="color:var(--blue)">rent</span>.
         In the fields, you set <span style="color:var(--green)">wages</span>.
         Same decade, same shock, different leverage.
+        <span class="pill">Press <span class="kbd">?</span> anytime for “How it Works”</span>
       </p>
     </div>
 
@@ -171,11 +282,11 @@
         </div>
         <div class="desc">
           You’re a town landlord among rival houses. Set rent to attract tenants without leaving money on the table.
-          Watch how labor scarcity and death change bargaining power.
+          Watch how death and scarcity shift bargaining power.
         </div>
         <div class="btnrow">
           <a class="btn btn-town" href="town.html">PLAY IN TOWN</a>
-          <a class="btn btn-small" href="town.html#howto">HOW IT WORKS</a>
+          <button class="btn btn-small" data-open-how="town" type="button">HOW IT WORKS</button>
         </div>
       </div>
 
@@ -188,11 +299,11 @@
         </div>
         <div class="desc">
           You’re a vineyard owner competing for workers. Offer wages high enough to staff the rows, but not so high you burn your gold.
-          Plague changes the worker market fast.
+          The plague changes the worker market fast.
         </div>
         <div class="btnrow">
           <a class="btn btn-fields" href="fields.html">PLAY IN THE FIELDS</a>
-          <a class="btn btn-small" href="fields.html#howto">HOW IT WORKS</a>
+          <button class="btn btn-small" data-open-how="fields" type="button">HOW IT WORKS</button>
         </div>
       </div>
     </div>
@@ -200,16 +311,228 @@
     <div class="footer">
       Tip: put <span class="kbd">index.html</span>, <span class="kbd">town.html</span>, and <span class="kbd">fields.html</span> in the same folder.
       If hosting on GitHub Pages, these become your three main files.
+      <br>
+      Shortcuts: <span class="kbd">1</span> town • <span class="kbd">2</span> fields • <span class="kbd">?</span> how it works • <span class="kbd">Esc</span> close
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS: TOWN -->
+  <div class="overlay" id="how-town" role="dialog" aria-modal="true" aria-label="How it works: In Town (Rents)">
+    <div class="modal">
+      <div class="modalTop">
+        <h3 style="color:var(--blue)">HOW IT WORKS: IN TOWN (RENTS)</h3>
+        <button class="closeBtn" data-close-how type="button">CLOSE</button>
+      </div>
+
+      <div class="howGrid">
+        <div class="howCard">
+          <h4>Goal</h4>
+          <p>
+            Finish the run with the most gold. Your one lever is <b>rent</b>.
+            Charge too much and your building goes empty. Charge too little and you “win” tenants but leave money on the table.
+          </p>
+          <div class="hint">
+            <p>
+              This is a bargaining-power story: before the plague, tenants have more options; after the plague, landlords and survivors renegotiate everything.
+            </p>
+          </div>
+        </div>
+
+        <div class="howCard">
+          <h4>Controls (what to click)</h4>
+          <ul>
+            <li>Use <b>-</b> and <b>+</b> to set your rent.</li>
+            <li>Your building is outlined <span style="color:var(--orange)">orange</span>.</li>
+            <li>The top bar shows <b>Date</b>, <b>Population</b>, <b>My Wealth</b>, and <b>Avg Rent</b>.</li>
+          </ul>
+          <div class="warn">
+            <p>
+              If “How it Works” ever takes you into a running game, come back here—this launcher is the instructions hub.
+            </p>
+          </div>
+        </div>
+
+        <div class="howCard">
+          <h4>How the simulation behaves</h4>
+          <ul>
+            <li>Each month, tenants <b>shuffle</b> between houses looking for better deals.</li>
+            <li>When population drops (the plague), there are fewer renters overall, so demand falls.</li>
+            <li>Rival landlords also change rent, so you’re in a price war.</li>
+          </ul>
+          <p class="hint">
+            Watch the relationship between <b>Population</b> and <b>Avg Rent</b>. That’s the “market pressure” indicator.
+          </p>
+        </div>
+
+        <div class="howCard">
+          <h4>Simple strategy experiments (student-friendly)</h4>
+          <ul>
+            <li><b>High early rent:</b> push rent above average and see when emptiness begins.</li>
+            <li><b>Match the market:</b> hover near Avg Rent and try to avoid vacancy.</li>
+            <li><b>Plague shock response:</b> when population collapses, drop rent and see if occupancy returns.</li>
+          </ul>
+          <div class="pill">Ask: “Who has leverage right now?”</div>
+          <div class="pill">Ask: “What changed after 1348?”</div>
+        </div>
+
+        <div class="howCard" style="grid-column: 1 / -1;">
+          <h4>What to write down (worksheet-ready)</h4>
+          <ul>
+            <li>Before 1348: what rent level kept you full?</li>
+            <li>After 1348: what rent level kept you full?</li>
+            <li>Did your “best” move feel unfair or morally gross? Why might real landlords do it anyway?</li>
+            <li>How did the plague change <b>bargaining power</b>?</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="btnrow" style="margin-top:12px;">
+        <a class="btn btn-town" href="town.html">PLAY IN TOWN</a>
+        <button class="btn btn-small" data-close-how type="button">BACK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS: FIELDS -->
+  <div class="overlay" id="how-fields" role="dialog" aria-modal="true" aria-label="How it works: In the Fields (Wages)">
+    <div class="modal">
+      <div class="modalTop">
+        <h3 style="color:var(--green)">HOW IT WORKS: IN THE FIELDS (WAGES)</h3>
+        <button class="closeBtn" data-close-how type="button">CLOSE</button>
+      </div>
+
+      <div class="howGrid">
+        <div class="howCard">
+          <h4>Goal</h4>
+          <p>
+            Harvest grapes and end with the most gold. Your one lever is <b>wage offered</b>.
+            Pay too low and you can’t staff your rows. Pay too high and you “win” workers but burn your profits.
+          </p>
+          <div class="hint">
+            <p>
+              The plague flips leverage here too—after mass death, <b>workers</b> become scarce, so wages rise.
+            </p>
+          </div>
+        </div>
+
+        <div class="howCard">
+          <h4>Controls (what to click)</h4>
+          <ul>
+            <li>Use <b>-</b> and <b>+</b> to set your offered wage.</li>
+            <li>Top bar shows <b>Year</b>, <b>Workers</b>, <b>Gold</b>, and <b>Avg Wage</b>.</li>
+            <li>Other vineyards post their pay above the hill line.</li>
+          </ul>
+        </div>
+
+        <div class="howCard">
+          <h4>How the simulation behaves</h4>
+          <ul>
+            <li>Workers drift to the best-paying vineyard (“poaching”).</li>
+            <li>You need enough workers to harvest effectively.</li>
+            <li>When the Black Death hits, the total worker pool shrinks fast.</li>
+          </ul>
+          <p class="hint">
+            If you suddenly can’t fill jobs even at high pay, that’s the point: scarcity can make “money” less useful than “people.”
+          </p>
+        </div>
+
+        <div class="howCard">
+          <h4>Simple strategy experiments</h4>
+          <ul>
+            <li><b>Low-wage gamble:</b> stay under Avg Wage and see how much you lose to poaching.</li>
+            <li><b>Match the market:</b> keep wage near Avg Wage and watch stability.</li>
+            <li><b>Plague shock response:</b> increase wage sharply after the plague and see if staffing returns.</li>
+          </ul>
+          <div class="pill">Ask: “Why do wages spike?”</div>
+          <div class="pill">Ask: “Who can say ‘no’ now?”</div>
+        </div>
+
+        <div class="howCard" style="grid-column: 1 / -1;">
+          <h4>What to write down (worksheet-ready)</h4>
+          <ul>
+            <li>What wage kept you fully staffed before the plague?</li>
+            <li>What wage kept you staffed after the plague?</li>
+            <li>Did you ever raise wages and still fail to hire? What does that tell you about supply limits?</li>
+            <li>How did the plague change the power relationship between employers and workers?</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="btnrow" style="margin-top:12px;">
+        <a class="btn btn-fields" href="fields.html">PLAY IN THE FIELDS</a>
+        <button class="btn btn-small" data-close-how type="button">BACK</button>
+      </div>
     </div>
   </div>
 
   <script>
-    // Optional: keyboard shortcuts on desktop
+    // --- modal helpers ---
+    const overlays = {
+      town: document.getElementById('how-town'),
+      fields: document.getElementById('how-fields')
+    };
+
+    function openHow(which){
+      const el = overlays[which];
+      if(!el) return;
+      el.classList.add('show');
+      // move focus to close button for keyboard users
+      const close = el.querySelector('[data-close-how]');
+      if(close) close.focus();
+    }
+
+    function closeHow(){
+      Object.values(overlays).forEach(el => el.classList.remove('show'));
+    }
+
+    // open from buttons
+    document.querySelectorAll('[data-open-how]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        openHow(btn.getAttribute('data-open-how'));
+      });
+    });
+
+    // close from buttons
+    document.querySelectorAll('[data-close-how]').forEach(btn=>{
+      btn.addEventListener('click', closeHow);
+    });
+
+    // click outside modal to close
+    Object.values(overlays).forEach(ov=>{
+      ov.addEventListener('click', (e)=>{
+        if(e.target === ov) closeHow();
+      });
+    });
+
+    // keyboard shortcuts on desktop
     window.addEventListener('keydown', (e) => {
       const k = (e.key || '').toLowerCase();
+
+      // global navigation
       if(k === '1') window.location.href = 'town.html';
       if(k === '2') window.location.href = 'fields.html';
+
+      // help
+      if(k === '?' || (k === '/' && e.shiftKey)) openHow('town'); // default help opens Town
+      if(k === 'h') openHow('town'); // optional: H = help
+
+      // close modals
+      if(k === 'escape') closeHow();
+
+      // quick open specific
+      if(k === 't') openHow('town');   // T = town help
+      if(k === 'f') openHow('fields'); // F = fields help
     });
+
+    // If someone comes to index.html#howto-town or #howto-fields, open that modal.
+    // (Useful if you still want shareable “How it works” links.)
+    function openFromHash(){
+      const h = (window.location.hash || '').toLowerCase();
+      if(h === '#howto-town') openHow('town');
+      if(h === '#howto-fields') openHow('fields');
+    }
+    openFromHash();
+    window.addEventListener('hashchange', openFromHash);
   </script>
 </body>
 </html>
